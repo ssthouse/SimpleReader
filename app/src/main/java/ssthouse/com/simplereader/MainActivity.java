@@ -1,13 +1,25 @@
 package ssthouse.com.simplereader;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.content.Context;
+import android.content.Intent;
 
-public class MainActivity extends AppCompatActivity {
+import ssthouse.com.simplereader.base.BaseActivity;
+
+public class MainActivity extends BaseActivity {
+
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void init() {
+
+    }
+
+    @Override
+    public int getContentView() {
+        return R.layout.activity_main;
     }
 }
