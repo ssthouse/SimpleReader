@@ -5,26 +5,26 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.widget.ListView;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import ssthouse.com.simplereader.base.BaseActivity;
-import ssthouse.com.simplereader.utils.PreferUtil;
 
-public class MainActivity extends BaseActivity {
+/**
+ * 展示,添加书籍Activity
+ * Created by ssthouse on 2016/9/29.
+ */
+
+public class BookListActivity extends BaseActivity {
 
     @Bind(R.id.id_tb)
     Toolbar toolbar;
 
-    @Bind(R.id.id_fab_add_book)
-    FloatingActionButton fabAddBook;
-
-    @Bind(R.id.id_lv_books)
-    ListView lvBooks;
+    @Bind(R.id.id_fab_find_book)
+    FloatingActionButton fabFindBook;
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, BookListActivity.class);
         context.startActivity(intent);
     }
 
@@ -33,22 +33,18 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null)
-            actionBar.setTitle("SimpleReader");
+            actionBar.setTitle("BookList");
 
 
-        if (PreferUtil.getInstance().isFistIn(this)) {
-            //模拟点击添加书籍按钮事件
-            fabAddBook.performClick();
-        }
     }
 
-    @OnClick(R.id.id_fab_add_book)
-    public void onAddBookClicked(){
-        BookListActivity.start(this);
+    @OnClick(R.id.id_fab_find_book)
+    public void onFabFindBookClicked(){
+        //TODO 打开文件管理器  获取文件路径
     }
 
     @Override
     public int getContentView() {
-        return R.layout.activity_main;
+        return R.layout.activity_book_list;
     }
 }

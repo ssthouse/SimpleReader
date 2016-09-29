@@ -1,35 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="ssthouse.com.simplereader.MainActivity">
-
+    android:orientation="vertical">
 
     <include layout="@layout/toolbar" />
-
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <ListView
-            android:id="@+id/id_lv_books"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <!--打开文件管理器 获取文件路径-->
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/id_fab_add_book"
+            android:id="@+id/id_fab_find_book"
             android:layout_width="54dp"
             android:layout_height="54dp"
             android:layout_gravity="right|bottom"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_margin="16dp"
             android:src="@drawable/ic_action_new" />
 
     </FrameLayout>
+
 
 </LinearLayout>
