@@ -32,4 +32,5 @@ dependencies {
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.jakewharton.timber:timber:4.1.2'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.github.channguyen:rsv:1.0.1'
 }

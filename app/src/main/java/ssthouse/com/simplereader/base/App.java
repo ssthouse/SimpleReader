@@ -1,6 +1,8 @@
 package ssthouse.com.simplereader.base;
 
-import android.app.Application;
+
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.app.Application;
 
 import timber.log.Timber;
 
@@ -14,5 +16,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Timber.plant(new Timber.DebugTree());
+        ActiveAndroid.initialize(this);
     }
 }

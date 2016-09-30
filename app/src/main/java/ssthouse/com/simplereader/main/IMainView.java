@@ -2,6 +2,7 @@ package ssthouse.com.simplereader.main;
 
 import java.util.List;
 
+import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
 
 /**
@@ -10,8 +11,16 @@ import ssthouse.com.simplereader.bean.BookBean;
 
 public interface IMainView {
 
-    void reloadBooks(List<BookBean> bookList);
+    int FRAGMENT_BOOK_LIST = 1000;
+    int FRAGMENT_ARTICLE_LIST = 1001;
 
+    void reloadBooks(List<BookBean> bookBeanList);
 
+    void reloadArticles(List<ArticleBean> articleBeanList);
 
+    void transFragment(int fragmentState);
+
+    void showWaitDialog();
+
+    void dismissWaitDialog();
 }

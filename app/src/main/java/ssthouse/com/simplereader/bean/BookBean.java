@@ -1,40 +1,46 @@
 package ssthouse.com.simplereader.bean;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
+import java.util.List;
+
 /**
  * 保存图书基本信息
  * Created by ssthouse on 2016/9/29.
  */
-
-public class BookBean {
+@Table(name = "Books")
+public class BookBean extends Model {
 
     /**
      * 书名
      */
-    private String bookName;
+    @Column(name = "Name")
+    public String bookName;
 
     /**
      * 简介
      */
-    private String brief;
+    @Column(name = "Brief")
+    public String brief;
+
+    public BookBean() {
+        super();
+    }
 
     public BookBean(String bookName, String brief) {
+        super();
         this.bookName = bookName;
         this.brief = brief;
     }
 
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public String getBrief() {
-        return brief;
-    }
-
-    public void setBrief(String brief) {
-        this.brief = brief;
+    /**
+     * 获取文章列表
+     *
+     * @return
+     */
+    public List<ArticleBean> getArticleBeanList() {
+        return getMany(ArticleBean.class, "BookBean");
     }
 }

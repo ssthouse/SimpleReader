@@ -1,5 +1,7 @@
 package ssthouse.com.simplereader.main;
 
+import android.content.Context;
+
 import java.util.List;
 
 import ssthouse.com.simplereader.bean.BookBean;
@@ -15,4 +17,8 @@ public interface IMainModel {
      * @return
      */
     List<BookBean> getBookList();
+
+    void saveNewBook(String filePath);
+
+    void loadLocalBook(Context context);
 }

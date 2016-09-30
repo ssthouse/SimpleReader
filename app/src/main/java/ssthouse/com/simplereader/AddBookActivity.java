@@ -15,7 +15,7 @@ import ssthouse.com.simplereader.base.BaseActivity;
  * Created by ssthouse on 2016/9/29.
  */
 
-public class BookListActivity extends BaseActivity {
+public class AddBookActivity extends BaseActivity {
 
     @Bind(R.id.id_tb)
     Toolbar toolbar;
@@ -24,7 +24,7 @@ public class BookListActivity extends BaseActivity {
     FloatingActionButton fabFindBook;
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, BookListActivity.class);
+        Intent intent = new Intent(context, AddBookActivity.class);
         context.startActivity(intent);
     }
 
@@ -32,19 +32,19 @@ public class BookListActivity extends BaseActivity {
     protected void init() {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null)
-            actionBar.setTitle("BookList");
+        if (actionBar != null)
+            actionBar.setTitle("添加书籍");
 
 
     }
 
     @OnClick(R.id.id_fab_find_book)
-    public void onFabFindBookClicked(){
+    public void onFabFindBookClicked() {
         //TODO 打开文件管理器  获取文件路径
     }
 
     @Override
     public int getContentView() {
-        return R.layout.activity_book_list;
+        return R.layout.activity_add_book;
     }
 }
