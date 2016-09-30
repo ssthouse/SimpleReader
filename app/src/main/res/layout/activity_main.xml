@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ssthouse.com.simplereader.MainActivity">
+    tools:context="ssthouse.com.simplereader.main.MainActivity">
 
 
     <include layout="@layout/toolbar" />

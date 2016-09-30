@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import butterknife.Bind;
 import ssthouse.com.simplereader.base.BaseActivity;
+import ssthouse.com.simplereader.main.MainActivity;
 
 /**
  * Created by ssthouse on 2016/9/28.
@@ -26,7 +27,6 @@ public class SplashActivity extends BaseActivity {
         WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
         localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
 
-        //开始动画
         Animator animatorX = ObjectAnimator.ofFloat(ivBg, "scaleX", 1.0f, 1.15f)
                 .setDuration(ANIMATION_TIME);
         Animator animatorY = ObjectAnimator.ofFloat(ivBg, "scaleY", 1.0f, 1.15f)
