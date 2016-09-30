@@ -39,7 +39,10 @@ public class MainModel implements IMainModel {
     public void loadLocalBook(Context context) {
         InputStream is = null;
         BufferedReader br = null;
-        BookBean bookBean = new BookBean("新概念四", "brief");
+        BookBean bookBean = new BookBean();
+        bookBean.bookName = "新概念4";
+        bookBean.brief = "brief";
+        bookBean.save();
         List<ArticleBean> articleBeanList = new ArrayList<>();
         try {
             //依次读取每一行  遇到Lesson换行
@@ -76,6 +79,14 @@ public class MainModel implements IMainModel {
 //            Timber.e(article.content);
 //        }
         Timber.e("所有文章的数目:\t" + articleBeanList.size());
+//        bookBean.save();
+        for (ArticleBean article: articleBeanList) {
+            article.save();
+        }
+
+        //log out data base
+        List<ArticleBean> testList = bookBean.getArticleBeanList();
+        Timber.e("数据库中article数目为:"+testList.size());
         //保存解析出来的数据
 //        for()
         //抛出解析完成event
