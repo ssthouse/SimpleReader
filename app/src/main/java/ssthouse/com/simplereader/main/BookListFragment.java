@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,7 +26,8 @@ import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.base.BaseFragment;
 import ssthouse.com.simplereader.bean.BookBean;
 import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
-import ssthouse.com.simplereader.bean.event.LoadLocalBookEvent;
+import ssthouse.com.simplereader.bean.event.ChangeToArticleEvent;
+import ssthouse.com.simplereader.bean.event.LoadApkBookBeanEvent;
 import timber.log.Timber;
 
 /**
@@ -51,6 +53,12 @@ public class BookListFragment extends BaseFragment {
     @Override
     public void init() {
         mListViw.setAdapter(mAdapter);
+        mListViw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                EventBus.getDefault().post(new ChangeToArticleEvent(mBookList.get(position)));
+            }
+        });
 
         //刷新书库列表
         EventBus.getDefault().post(new BookBeanChangedEvent());
@@ -64,7 +72,7 @@ public class BookListFragment extends BaseFragment {
         //先尝试加载raw中的文件
 
         //显示加载内置书籍 dialog
-        EventBus.getDefault().post(new LoadLocalBookEvent());
+        EventBus.getDefault().post(new LoadApkBookBeanEvent());
 
         //直接启动文件管理器  获取路径
 //        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);

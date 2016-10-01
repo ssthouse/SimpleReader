@@ -3,6 +3,8 @@
     android:id="@+id/id_lv_articles"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp">
+    android:background="@color/grey"
+    android:divider="@color/grey"
+    android:dividerHeight="8dp">
 
 </ListView>

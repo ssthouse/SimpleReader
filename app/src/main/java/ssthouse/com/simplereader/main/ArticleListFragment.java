@@ -1,5 +1,6 @@
 package ssthouse.com.simplereader.main;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -56,10 +57,11 @@ public class ArticleListFragment extends BaseFragment {
             ViewHolder viewHolder = null;
             if (convertView != null) {
                 viewHolder = (ViewHolder) convertView.getTag();
-            }else{
+            } else {
                 viewHolder = new ViewHolder();
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_article, parent, false);
                 viewHolder.tvName = (TextView) convertView.findViewById(R.id.id_tv_article_name);
-                viewHolder.tvContent  = (TextView) convertView.findViewById(R.id.id_tv_content);
+                viewHolder.tvContent = (TextView) convertView.findViewById(R.id.id_tv_content);
                 convertView.setTag(viewHolder);
             }
             viewHolder.tvName.setText(mArticleBeanList.get(position).getArticleName());
@@ -68,13 +70,14 @@ public class ArticleListFragment extends BaseFragment {
         }
     };
 
-    class ViewHolder{
+    class ViewHolder {
         TextView tvName;
         TextView tvContent;
     }
 
     /**
      * UI操作
+     *
      * @param articleBeanList
      */
     public void loadArticles(List<ArticleBean> articleBeanList) {

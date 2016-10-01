@@ -101,4 +101,10 @@ public class MainModel implements IMainModel {
                 .orderBy("Name ASC")
                 .execute();
     }
+
+    @Override
+    public List<ArticleBean> getAllArticleBeans(BookBean bookBean){
+        return bookBean.getArticleBeanList();
+    }
+
 }

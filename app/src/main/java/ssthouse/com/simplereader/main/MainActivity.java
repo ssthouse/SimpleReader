@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -17,19 +18,22 @@ import ssthouse.com.simplereader.base.BaseActivity;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
 import ssthouse.com.simplereader.utils.PreferUtil;
+import ssthouse.com.simplereader.utils.ToastUtil;
 
 public class MainActivity extends BaseActivity implements IMainView {
+
+    //两次返回退出app
+    private static long lastBackKeyPressedTIme = 0;
 
     @Bind(R.id.id_tb)
     Toolbar toolbar;
 
     private MainPresenter mPresenter;
 
-    private int curFragment = FRAGMENT_BOOK_LIST;
-
     private FragmentManager mFragmentManager;
     private BookListFragment mBookListFragment;
     private ArticleListFragment mArticleListFragment;
+    private int curFragment = FRAGMENT_BOOK_LIST;
 
     private AlertDialog mDialog;
 
@@ -74,20 +78,40 @@ public class MainActivity extends BaseActivity implements IMainView {
     @Override
     public void transFragment(int fragmentState) {
         Fragment targetFragment = mBookListFragment;
+        ActionBar actionBar = getSupportActionBar();
         switch (fragmentState) {
             case FRAGMENT_BOOK_LIST:
+                curFragment = FRAGMENT_BOOK_LIST;
                 targetFragment = mBookListFragment;
+                if(actionBar!= null) {
+                    actionBar.setDisplayHomeAsUpEnabled(false);
+                    actionBar.setTitle("书库");
+                }
                 break;
             case FRAGMENT_ARTICLE_LIST:
+                curFragment = FRAGMENT_ARTICLE_LIST;
                 targetFragment = mArticleListFragment;
+                if(actionBar!= null) {
+                    actionBar.setDisplayHomeAsUpEnabled(true);
+                    actionBar.setTitle("文章列表");
+                }
                 break;
         }
         if (targetFragment == null)
             return;
         mFragmentManager.beginTransaction()
-                .replace(R.id.id_fragment_holder, targetFragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.id_fragment_holder, targetFragment)
                 .commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                transFragment(FRAGMENT_BOOK_LIST);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -115,4 +139,18 @@ public class MainActivity extends BaseActivity implements IMainView {
         mArticleListFragment.loadArticles(articleBeanList);
     }
 
+    @Override
+    public void onBackPressed() {
+        //判断fragment
+        if (curFragment == FRAGMENT_ARTICLE_LIST) {
+            transFragment(FRAGMENT_BOOK_LIST);
+            return;
+        }
+        if (System.currentTimeMillis() - lastBackKeyPressedTIme < 1000) {
+            finish();
+        }else{
+            lastBackKeyPressedTIme = System.currentTimeMillis();
+            ToastUtil.toastSort(this, "再次点击退出");
+        }
+    }
 }

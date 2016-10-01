@@ -12,8 +12,7 @@ import ssthouse.com.simplereader.bean.event.AddNewBookEvent;
 import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToArticleEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToBookListEvent;
-import ssthouse.com.simplereader.bean.event.GetBookListEvent;
-import ssthouse.com.simplereader.bean.event.LoadLocalBookEvent;
+import ssthouse.com.simplereader.bean.event.LoadApkBookBeanEvent;
 import ssthouse.com.simplereader.utils.ToastUtil;
 
 /**
@@ -57,10 +56,6 @@ public class MainPresenter {
         List<BookBean> bookBeanList = mMainModel.getAllBookBeans();
         mMainView.reloadBooks(bookBeanList);
         mMainView.dismissWaitDialog();
-//        Timber.e("收到暑假刷新event");
-//        Timber.e("大小为:\t" + event.getBookList().size());
-//        mMainView.reloadBooks(event.getBookList());
-//        mMainView.dismissWaitDialog();
     }
 
     /**
@@ -70,7 +65,12 @@ public class MainPresenter {
      */
     @Subscribe
     public void onChangeToArticleList(ChangeToArticleEvent event) {
+        if (event == null || event.getBookBean() == null) {
+            return;
+        }
         mMainView.transFragment(IMainView.FRAGMENT_ARTICLE_LIST);
+        //加载articles
+        mMainView.reloadArticles(mMainModel.getAllArticleBeans(event.getBookBean()));
     }
 
     /**
@@ -88,15 +88,9 @@ public class MainPresenter {
      * 加载apk中books
      */
     @Subscribe
-    public void loadLocalBook(LoadLocalBookEvent event) {
+    public void onLoadApkBookBeanEvent(LoadApkBookBeanEvent event) {
         mMainView.showWaitDialog();
         //获取raw中.txt文件
         mMainModel.saveApkBookBeans(mContext);
-    }
-
-    @Subscribe
-    public void onGetBookListEvent(GetBookListEvent event) {
-        List<BookBean> bookBeanList = mMainModel.getAllBookBeans();
-        mMainView.reloadBooks(bookBeanList);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.List;
 
+import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
 
 /**
@@ -32,4 +33,11 @@ public interface IMainModel {
      * @return
      */
     public List<BookBean> getAllBookBeans();
+
+    /**
+     * 获取BookBean中的ArticleBeans
+     * @param bookBean
+     * @return
+     */
+    List<ArticleBean> getAllArticleBeans(BookBean bookBean);
 }
