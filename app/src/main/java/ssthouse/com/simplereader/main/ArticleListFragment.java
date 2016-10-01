@@ -3,6 +3,7 @@ package ssthouse.com.simplereader.main;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import ssthouse.com.simplereader.R;
+import ssthouse.com.simplereader.ReadingActivity;
 import ssthouse.com.simplereader.base.BaseFragment;
 import ssthouse.com.simplereader.bean.ArticleBean;
 
@@ -34,6 +36,13 @@ public class ArticleListFragment extends BaseFragment {
     @Override
     public void init() {
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ReadingActivity.start(getActivity(), mArticleBeanList.get(position));
+                //TODO  通过id传递好了
+            }
+        });
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {

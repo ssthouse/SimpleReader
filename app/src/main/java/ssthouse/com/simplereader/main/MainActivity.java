@@ -10,6 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -17,6 +19,7 @@ import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.base.BaseActivity;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
+import ssthouse.com.simplereader.bean.event.LoadApkBookBeanEvent;
 import ssthouse.com.simplereader.utils.PreferUtil;
 import ssthouse.com.simplereader.utils.ToastUtil;
 
@@ -58,9 +61,9 @@ public class MainActivity extends BaseActivity implements IMainView {
         //初始话presenter
         mPresenter = new MainPresenter(this, new MainModel());
 
-        //TODO  第一次进入逻辑有待商榷
+        //第一次进入 加载apk中BookBean
         if (PreferUtil.getInstance().isFistIn(this)) {
-            //模拟点击添加书籍按钮事件
+            EventBus.getDefault().post(new LoadApkBookBeanEvent());
             PreferUtil.getInstance().setIsFistIn(this, false);
         }
     }

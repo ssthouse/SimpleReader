@@ -37,7 +37,7 @@
         <meta-data android:name="AA_DB_VERSION" android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="ssthouse.com.simplereader.bean.ArticleBean, ssthouse.com.simplereader.bean.BookBean" />
+            android:value="ssthouse.com.simplereader.bean.ArticleBean, ssthouse.com.simplereader.bean.BookBean, ssthouse.com.simplereader.bean.WordBean" />
     </application>
 
 </manifest>

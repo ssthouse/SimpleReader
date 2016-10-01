@@ -28,6 +28,12 @@ public interface IMainModel {
     void saveApkBookBeans(Context context);
 
     /**
+     * 加载apk中WordBean
+     * @param context
+     */
+    void loadApkWords(Context context);
+
+    /**
      * 加载app已保存所有书籍
      *
      * @return

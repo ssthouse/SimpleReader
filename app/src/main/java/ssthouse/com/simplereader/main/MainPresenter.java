@@ -31,7 +31,6 @@ public class MainPresenter {
         this.mMainView = mMainView;
         this.mMainModel = mMainModel;
         this.mContext = (Context) mMainView;
-        //注册eventbus
         EventBus.getDefault().register(this);
     }
 
@@ -84,7 +83,8 @@ public class MainPresenter {
     }
 
     /**
-     * TODO
+     * TODO:
+     * 使用RxJava进行异步操作   从Model返回一个Observable
      * 加载apk中books
      */
     @Subscribe
@@ -92,5 +92,7 @@ public class MainPresenter {
         mMainView.showWaitDialog();
         //获取raw中.txt文件
         mMainModel.saveApkBookBeans(mContext);
+        //加载raw中WordBean
+        mMainModel.loadApkWords(mContext);
     }
 }

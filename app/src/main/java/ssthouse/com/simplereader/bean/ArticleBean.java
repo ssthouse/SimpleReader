@@ -19,7 +19,7 @@ public class ArticleBean extends Model {
     @Column(name = "BookBean")
     public BookBean bookBean;
 
-    public ArticleBean(){
+    public ArticleBean() {
         super();
     }
 
