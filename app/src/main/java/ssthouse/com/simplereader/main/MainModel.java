@@ -2,6 +2,8 @@ package ssthouse.com.simplereader.main;
 
 import android.content.Context;
 
+import com.activeandroid.query.Select;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedReader;
@@ -14,7 +16,7 @@ import java.util.List;
 import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
-import ssthouse.com.simplereader.bean.event.BookListUpdateEvent;
+import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
 import timber.log.Timber;
 
 /**
@@ -24,19 +26,13 @@ import timber.log.Timber;
 public class MainModel implements IMainModel {
 
     @Override
-    public List<BookBean> getBookList() {
-        //TODO 数据库查询
-        return null;
-    }
-
-    @Override
     public void saveNewBook(String filePath) {
         //TODO save new file to data base
 
     }
 
     @Override
-    public void loadLocalBook(Context context) {
+    public void saveApkBookBeans(Context context) {
         InputStream is = null;
         BufferedReader br = null;
         BookBean bookBean = new BookBean();
@@ -87,11 +83,22 @@ public class MainModel implements IMainModel {
         //log out data base
         List<ArticleBean> testList = bookBean.getArticleBeanList();
         Timber.e("数据库中article数目为:"+testList.size());
-        //保存解析出来的数据
-//        for()
         //抛出解析完成event
         List<BookBean> bookBeanList = new ArrayList<>();
         bookBeanList.add(bookBean);
-        EventBus.getDefault().post(new BookListUpdateEvent(bookBeanList));
+        //抛出BookBean数据更新event
+        EventBus.getDefault().post(new BookBeanChangedEvent());
+    }
+
+    /**
+     * 加载数据库中所有BookBean
+     * @return
+     */
+    @Override
+    public List<BookBean> getAllBookBeans(){
+        return new Select()
+                .from(BookBean.class)
+                .orderBy("Name ASC")
+                .execute();
     }
 }

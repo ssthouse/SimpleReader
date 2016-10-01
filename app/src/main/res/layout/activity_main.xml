@@ -12,8 +12,8 @@
     <include layout="@layout/toolbar" />
 
     <fragment
-        android:name="ssthouse.com.simplereader.main.BookListFragment"
         android:id="@+id/id_fragment_holder"
+        android:name="ssthouse.com.simplereader.main.BookListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

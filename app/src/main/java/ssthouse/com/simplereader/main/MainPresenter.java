@@ -5,14 +5,14 @@ import android.content.Context;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ssthouse.com.simplereader.bean.BookBean;
 import ssthouse.com.simplereader.bean.event.AddNewBookEvent;
-import ssthouse.com.simplereader.bean.event.BookListUpdateEvent;
+import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToArticleEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToBookListEvent;
+import ssthouse.com.simplereader.bean.event.GetBookListEvent;
 import ssthouse.com.simplereader.bean.event.LoadLocalBookEvent;
 import ssthouse.com.simplereader.utils.ToastUtil;
 
@@ -36,15 +36,6 @@ public class MainPresenter {
         EventBus.getDefault().register(this);
     }
 
-    public void reloadBookList() {
-        //TODO  测试添加数据
-        List<BookBean> bookList = new ArrayList<>();
-        bookList.add(new BookBean("bookName1", "I am book one."));
-        //List<BookBean> bookList = mMainModel.getBookList();
-        mMainView.reloadBooks(bookList);
-
-    }
-
     @Subscribe
     public void onAddNewBook(AddNewBookEvent event) {
         if (event == null || event.getFilePath() == null || event.getFilePath().length() == 0) {
@@ -61,9 +52,15 @@ public class MainPresenter {
      * @param event
      */
     @Subscribe
-    public void onBookListUpdate(BookListUpdateEvent event) {
-        mMainView.reloadBooks(event.getBookList());
+    public void onBookListUpdate(BookBeanChangedEvent event) {
+        mMainView.showWaitDialog();
+        List<BookBean> bookBeanList = mMainModel.getAllBookBeans();
+        mMainView.reloadBooks(bookBeanList);
         mMainView.dismissWaitDialog();
+//        Timber.e("收到暑假刷新event");
+//        Timber.e("大小为:\t" + event.getBookList().size());
+//        mMainView.reloadBooks(event.getBookList());
+//        mMainView.dismissWaitDialog();
     }
 
     /**
@@ -88,13 +85,18 @@ public class MainPresenter {
 
     /**
      * TODO
-     * 加载本地books
+     * 加载apk中books
      */
     @Subscribe
     public void loadLocalBook(LoadLocalBookEvent event) {
         mMainView.showWaitDialog();
         //获取raw中.txt文件
-        mMainModel.loadLocalBook(mContext);
+        mMainModel.saveApkBookBeans(mContext);
     }
 
+    @Subscribe
+    public void onGetBookListEvent(GetBookListEvent event) {
+        List<BookBean> bookBeanList = mMainModel.getAllBookBeans();
+        mMainView.reloadBooks(bookBeanList);
+    }
 }

@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.base.BaseFragment;
 import ssthouse.com.simplereader.bean.BookBean;
+import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
 import ssthouse.com.simplereader.bean.event.LoadLocalBookEvent;
 import timber.log.Timber;
 
@@ -50,6 +51,9 @@ public class BookListFragment extends BaseFragment {
     @Override
     public void init() {
         mListViw.setAdapter(mAdapter);
+
+        //刷新书库列表
+        EventBus.getDefault().post(new BookBeanChangedEvent());
     }
 
     @OnClick(R.id.id_fab_add_book)
@@ -88,7 +92,7 @@ public class BookListFragment extends BaseFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder = null;
+            ViewHolder viewHolder;
             if (convertView != null) {
                 viewHolder = (ViewHolder) convertView.getTag();
             } else {
@@ -114,6 +118,9 @@ public class BookListFragment extends BaseFragment {
      * UI操作
      */
     public void loadBookList(List<BookBean> bookList) {
+        if (bookList == null || bookList.size() == 0) {
+            return;
+        }
         mBookList = bookList;
         mAdapter.notifyDataSetChanged();
     }
@@ -130,6 +137,7 @@ public class BookListFragment extends BaseFragment {
 
     /**
      * TODO bug:只有通过系统文件浏览器才能拿到文件??
+     *
      * @param uri
      * @return
      */

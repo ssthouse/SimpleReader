@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         mFragmentManager = getSupportFragmentManager();
         mBookListFragment = new BookListFragment();
         mArticleListFragment = new ArticleListFragment();
+        transFragment(FRAGMENT_BOOK_LIST);
 
         //初始话presenter
         mPresenter = new MainPresenter(this, new MainModel());
@@ -58,7 +59,6 @@ public class MainActivity extends BaseActivity implements IMainView {
             //模拟点击添加书籍按钮事件
             PreferUtil.getInstance().setIsFistIn(this, false);
         }
-        showWaitDialog();
     }
 
     @Override
@@ -73,8 +73,6 @@ public class MainActivity extends BaseActivity implements IMainView {
      */
     @Override
     public void transFragment(int fragmentState) {
-        if (curFragment == fragmentState)
-            return;
         Fragment targetFragment = mBookListFragment;
         switch (fragmentState) {
             case FRAGMENT_BOOK_LIST:

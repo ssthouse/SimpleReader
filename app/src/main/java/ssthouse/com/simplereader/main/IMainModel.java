@@ -13,12 +13,23 @@ import ssthouse.com.simplereader.bean.BookBean;
 public interface IMainModel {
 
     /**
-     * 获取书籍信息列表
-     * @return
+     * 保存新书
+     *
+     * @param filePath 新书文件路径
      */
-    List<BookBean> getBookList();
-
     void saveNewBook(String filePath);
 
-    void loadLocalBook(Context context);
+    /**
+     * 加载apk中自带书籍
+     *
+     * @param context
+     */
+    void saveApkBookBeans(Context context);
+
+    /**
+     * 加载app已保存所有书籍
+     *
+     * @return
+     */
+    public List<BookBean> getAllBookBeans();
 }
