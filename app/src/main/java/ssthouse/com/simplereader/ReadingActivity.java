@@ -128,6 +128,16 @@ public class ReadingActivity extends BaseActivity {
                 }
             }
         });
+
+        //TODO  等级切换
+        mRsvLevel.setOnSlideListener(new RangeSliderView.OnSlideListener() {
+            @Override
+            public void onSlide(int index) {
+                //TODO
+                Timber.e("current index:\t" + index);
+            }
+        });
+
     }
 
     @Override

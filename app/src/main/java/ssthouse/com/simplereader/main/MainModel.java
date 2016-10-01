@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.bean.ArticleBean;
@@ -98,21 +99,21 @@ public class MainModel implements IMainModel {
      */
     @Override
     public void loadApkWords(Context context) {
-        InputStream is = null;
-        BufferedReader br = null;
+        Scanner scanner = null;
+        ArrayList<WordBean> wordBeenList = new ArrayList<>();
         ActiveAndroid.beginTransaction();
         try {
-            is = context.getResources().openRawResource(R.raw.nce4_words);
-            br = new BufferedReader(new InputStreamReader(is));
-            String line = br.readLine();
-            ArrayList<WordBean> wordBeenList = new ArrayList<>();
-            while (line != null) {
-                line = br.readLine();
-                //生成WordBean
-                String[] wordAndLevel = line.split(" ");
-                Timber.e(wordAndLevel[0] + "****" + wordAndLevel[1]);
-                WordBean wordBean = new WordBean(wordAndLevel[0], Integer.parseInt(wordAndLevel[1]));
-                wordBeenList.add(wordBean);
+            scanner = new Scanner(context.getResources().openRawResource(R.raw.nce4_words));
+            String curWord = "";
+            while (scanner.hasNext()) {
+                if (scanner.hasNextInt()) {
+                    WordBean wordBean = new WordBean(curWord, scanner.nextInt());
+                    Timber.e(wordBean.name + "****************" + wordBean.level);
+                    wordBeenList.add(wordBean);
+                    curWord = "";
+                } else {
+                    curWord = curWord + scanner.next();
+                }
             }
             //add to database
             for (WordBean wordBean : wordBeenList) {
@@ -127,13 +128,8 @@ public class MainModel implements IMainModel {
             Timber.e(e.getMessage());
         } finally {
             ActiveAndroid.endTransaction();
+            scanner.close();
             Timber.e("transaction end");
-            try {
-                br.close();
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         //log out wordbean
@@ -144,6 +140,15 @@ public class MainModel implements IMainModel {
         for (WordBean wordBean : tempList) {
             Timber.e(wordBean.name + "   " + wordBean.level);
         }
+    }
+
+
+    private WordBean parseWordBean(String str) {
+//        int leftIndex =
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == ' ') ;
+        }
+        return null;
     }
 
     /**

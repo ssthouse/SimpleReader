@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         mArticleListFragment = new ArticleListFragment();
         transFragment(FRAGMENT_BOOK_LIST);
 
-        //初始话presenter
+        //presenter层
         mPresenter = new MainPresenter(this, new MainModel());
 
         //第一次进入 加载apk中BookBean
@@ -66,9 +66,10 @@ public class MainActivity extends BaseActivity implements IMainView {
             EventBus.getDefault().post(new LoadApkBookBeanEvent());
             PreferUtil.getInstance().setIsFistIn(this, false);
         }
+
+
     }
 
-    @Override
     public int getContentView() {
         return R.layout.activity_main;
     }
@@ -86,7 +87,7 @@ public class MainActivity extends BaseActivity implements IMainView {
             case FRAGMENT_BOOK_LIST:
                 curFragment = FRAGMENT_BOOK_LIST;
                 targetFragment = mBookListFragment;
-                if(actionBar!= null) {
+                if (actionBar != null) {
                     actionBar.setDisplayHomeAsUpEnabled(false);
                     actionBar.setTitle("书库");
                 }
@@ -94,7 +95,7 @@ public class MainActivity extends BaseActivity implements IMainView {
             case FRAGMENT_ARTICLE_LIST:
                 curFragment = FRAGMENT_ARTICLE_LIST;
                 targetFragment = mArticleListFragment;
-                if(actionBar!= null) {
+                if (actionBar != null) {
                     actionBar.setDisplayHomeAsUpEnabled(true);
                     actionBar.setTitle("文章列表");
                 }
@@ -151,7 +152,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         }
         if (System.currentTimeMillis() - lastBackKeyPressedTIme < 1000) {
             finish();
-        }else{
+        } else {
             lastBackKeyPressedTIme = System.currentTimeMillis();
             ToastUtil.toastSort(this, "再次点击退出");
         }
