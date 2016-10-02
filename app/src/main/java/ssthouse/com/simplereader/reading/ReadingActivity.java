@@ -1,4 +1,4 @@
-package ssthouse.com.simplereader;
+package ssthouse.com.simplereader.reading;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -26,16 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
+import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.base.BaseActivity;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.WordBean;
 import ssthouse.com.simplereader.utils.ToastUtil;
-import ssthouse.com.simplereader.utils.TouchableSpan;
-import timber.log.Timber;
 
 /**
- * 实现分级高亮的基本思路: 将所有文章中单词进行遍历, 将其中存在于数据库中的  保存到一个set中
- * 在
  * Created by ssthouse on 2016/9/30.
  */
 
@@ -61,7 +58,7 @@ public class ReadingActivity extends BaseActivity {
     //所有可点击单词
     private List<TouchableSpan> mTouchableSpanList = new ArrayList<>();
     private TouchableSpan mCurFocusSpan;
-    private int mCurLevel = 0;
+    private int mCurLevel = -1;
     //所有当前文章
     private List<WordBean> mWordBeanList = new ArrayList<>();
 
@@ -84,50 +81,32 @@ public class ReadingActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("分级阅读");
+            actionBar.setTitle(R.string.str_level_reading);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
+        //获取ArticleBean 为空return toast提示
         long articleId = getIntent().getLongExtra(KEY_EXTRA_ARTICLE_ID, 0);
         if (articleId == 0) {
-            ToastUtil.toastSort(this, "文章为空");
+            ToastUtil.toastSort(this, getString(R.string.str_empty_article));
             return;
         }
         mArticleBean = ArticleBean.load(ArticleBean.class, articleId);
         if (mArticleBean == null) {
-            ToastUtil.toastSort(this, "文章为空");
+            ToastUtil.toastSort(this, getString(R.string.str_empty_article));
             return;
         }
-
+        //slide bar 显示开关
         mFabToggle.setOnClickListener(clickListener);
-
+        //分级显示关键词
         mRsvLevel.setOnSlideListener(new RangeSliderView.OnSlideListener() {
             @Override
             public void onSlide(int index) {
+                //index = 0 代表不显示高亮关键词
                 mCurLevel = index - 1;
-                updateTextView();
-                Timber.e("current index:\t" + index);
+                updateTextViewTouchableSpan();
             }
         });
-
-        //处理文字 注: mTouchableSpan为空的时候, 不可以设置哦....
         initTouchableSpan();
-    }
-
-    private TouchableSpan getNewTouchableSpan() {
-        return new TouchableSpan(getResources().getColor(R.color.black_text), 0xFFFFFFFF,
-                getResources().getColor(R.color.colorPrimary)) {
-            @Override
-            public void onClick(View widget) {
-                if (mCurFocusSpan != null) {
-                    mCurFocusSpan.setPressed(false);
-                }
-                //设置当前focus span
-                mCurFocusSpan = this;
-                setPressed(true);
-                updateTextView();
-            }
-        };
     }
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
@@ -173,7 +152,7 @@ public class ReadingActivity extends BaseActivity {
     };
 
     /**
-     * 初始话TouchableSpan
+     * 初始话可点击文字
      */
     private void initTouchableSpan() {
         //获取所有WordBean
@@ -182,32 +161,57 @@ public class ReadingActivity extends BaseActivity {
         for (WordBean wordBean : allWordBeenList) {
             wordBeanMap.put(wordBean.name, wordBean);
         }
-        //获取所有当前article的word str -> 添加到wordBeanList中
-        String[] strArray = mArticleBean.content.split("\\s+");
-        List<String> strList = Arrays.asList(strArray);
-        for (String str : strList) {
+        //for every line
+        List<String> articleWordList = new ArrayList<>();
+        SpannableStringBuilder ssb = new SpannableStringBuilder("");
+        String[] lines = mArticleBean.content.split("\n");
+        List<String> lineList = Arrays.asList(lines);
+        for (String line : lineList) {
+            String words[] = line.split("\\s+");
+            for (String word : words) {
+                articleWordList.add(word);
+                SpannableString text = new SpannableString(word + " ");
+                TouchableSpan touchableSpan = getTouchableSpanInstance();
+                mTouchableSpanList.add(touchableSpan);
+                text.setSpan(touchableSpan, 0, word.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb.append(text);
+            }
+            ssb.append("\n");
+        }
+        //init mWordBeanList
+        for (String str : articleWordList) {
             if (wordBeanMap.containsKey(str)) {
                 mWordBeanList.add(wordBeanMap.get(str));
             } else {
                 mWordBeanList.add(new WordBean(str, Integer.MAX_VALUE));
             }
         }
-        SpannableStringBuilder ssb = new SpannableStringBuilder("");
-        for (String str : strList) {
-            SpannableString text = new SpannableString(str + " ");
-            TouchableSpan touchableSpan = getNewTouchableSpan();
-            mTouchableSpanList.add(touchableSpan);
-            text.setSpan(touchableSpan, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ssb.append(text);
-        }
         mTvMain.setText(ssb, TextView.BufferType.SPANNABLE);
         mTvMain.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     /**
+     * 获取可点击span实例
+     *
+     * @return
+     */
+    private TouchableSpan getTouchableSpanInstance() {
+        return new TouchableSpan(getResources().getColor(R.color.black_text),
+                getResources().getColor(R.color.white),
+                getResources().getColor(R.color.colorPrimary)) {
+            @Override
+            public void onClick(View widget) {
+                //设置当前focus span
+                mCurFocusSpan = this;
+                updateTextViewTouchableSpan();
+            }
+        };
+    }
+
+    /**
      * 刷新TextView
      */
-    private void updateTextView() {
+    private void updateTextViewTouchableSpan() {
         for (int i = 0; i < mWordBeanList.size(); i++) {
             //如果大于level set pressed true
             if (mWordBeanList.get(i).level <= mCurLevel) {
@@ -216,10 +220,9 @@ public class ReadingActivity extends BaseActivity {
                 mTouchableSpanList.get(i).setPressed(false);
             }
         }
-        mTvMain.invalidate();
-        //设置上一个点击的span为pressed
         if (mCurFocusSpan != null)
             mCurFocusSpan.setPressed(true);
+        mTvMain.invalidate();
     }
 
     @Override

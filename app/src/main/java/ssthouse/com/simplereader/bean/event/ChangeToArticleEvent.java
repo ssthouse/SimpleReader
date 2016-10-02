@@ -3,6 +3,7 @@ package ssthouse.com.simplereader.bean.event;
 import ssthouse.com.simplereader.bean.BookBean;
 
 /**
+ * 切换至文章列表event
  * Created by ssthouse on 2016/9/30.
  */
 

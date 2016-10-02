@@ -32,12 +32,11 @@ public class MainModel implements IMainModel {
         InputStream is = null;
         BufferedReader br = null;
         BookBean bookBean = new BookBean();
-        bookBean.bookName = "新概念4";
-        bookBean.brief = "brief";
+        bookBean.bookName = context.getString(R.string.str_default_book_name);
+        bookBean.brief = context.getString(R.string.str_brief_holder);
         bookBean.save();
         List<ArticleBean> articleBeanList = new ArrayList<>();
         try {
-            //依次读取每一行  遇到Lesson换行
             is = context.getResources().openRawResource(R.raw.new_concept_english_v4);
             br = new BufferedReader(new InputStreamReader(is));
             String curLine = "";
@@ -124,6 +123,11 @@ public class MainModel implements IMainModel {
                 .execute();
     }
 
+    /**
+     * 加载数据库中所有ArticleBean
+     * @param bookBean
+     * @return
+     */
     @Override
     public List<ArticleBean> getAllArticleBeans(BookBean bookBean) {
         return bookBean.getArticleBeanList();

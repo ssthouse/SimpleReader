@@ -13,7 +13,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import ssthouse.com.simplereader.R;
-import ssthouse.com.simplereader.ReadingActivity;
+import ssthouse.com.simplereader.reading.ReadingActivity;
 import ssthouse.com.simplereader.base.BaseFragment;
 import ssthouse.com.simplereader.bean.ArticleBean;
 

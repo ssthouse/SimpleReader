@@ -32,7 +32,6 @@ public class BookListFragment extends BaseFragment {
     private List<BookBean> mBookList = new ArrayList<>();
 
     @Override
-
     public int getContentView() {
         return R.layout.fragment_book_list;
     }
