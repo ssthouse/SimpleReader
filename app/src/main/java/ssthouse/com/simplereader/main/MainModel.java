@@ -55,7 +55,7 @@ public class MainModel implements IMainModel {
                         articleBeanList.add(new ArticleBean(curArticleName, sb.toString(), bookBean));
                     }
                     sb = new StringBuilder();
-                    curArticleName = curLine.substring(curLine.indexOf('L'), curLine.length() - 1);
+                    curArticleName = curLine.substring(curLine.indexOf('L'), curLine.length());
                 } else {
                     sb.append(curLine + "\n");
                 }
