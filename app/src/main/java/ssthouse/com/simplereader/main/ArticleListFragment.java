@@ -40,7 +40,6 @@ public class ArticleListFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ReadingActivity.start(getActivity(), mArticleBeanList.get(position));
-                //TODO  通过id传递好了
             }
         });
     }
@@ -74,7 +73,7 @@ public class ArticleListFragment extends BaseFragment {
                 convertView.setTag(viewHolder);
             }
             viewHolder.tvName.setText(mArticleBeanList.get(position).getArticleName());
-            viewHolder.tvContent.setText(mArticleBeanList.get(position).content);
+            viewHolder.tvContent.setText(mArticleBeanList.get(position).content.substring(0, 50));
             return convertView;
         }
     };

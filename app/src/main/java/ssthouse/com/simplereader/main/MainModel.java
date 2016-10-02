@@ -20,7 +20,6 @@ import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
 import ssthouse.com.simplereader.bean.WordBean;
 import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
-import timber.log.Timber;
 
 /**
  * Created by ssthouse on 2016/9/29.
@@ -56,10 +55,11 @@ public class MainModel implements IMainModel {
                         articleBeanList.add(new ArticleBean(curArticleName, sb.toString(), bookBean));
                     }
                     sb = new StringBuilder();
-                    curArticleName = curLine;
+                    curArticleName = curLine.substring(curLine.indexOf('L'), curLine.length() - 1);
+                } else {
+                    sb.append(curLine + "\n");
                 }
                 curLine = br.readLine();
-                sb.append(curLine);
             }
             //add last lesson
             articleBeanList.add(new ArticleBean(curArticleName, sb.toString(), bookBean));

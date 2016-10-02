@@ -39,9 +39,9 @@ public class MainPresenter {
         if (event == null || event.getFilePath() == null || event.getFilePath().length() == 0) {
             ToastUtil.toastSort(mContext, "文件路径无效");
             return;
-        } else {
-            mMainModel.saveNewBook(event.getFilePath());
         }
+
+        mMainModel.saveNewBook(event.getFilePath());
     }
 
     /**

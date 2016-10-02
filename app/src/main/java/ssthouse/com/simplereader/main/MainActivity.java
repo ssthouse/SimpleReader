@@ -66,8 +66,6 @@ public class MainActivity extends BaseActivity implements IMainView {
             EventBus.getDefault().post(new LoadApkBookBeanEvent());
             PreferUtil.getInstance().setIsFistIn(this, false);
         }
-
-
     }
 
     public int getContentView() {

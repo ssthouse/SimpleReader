@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +26,10 @@ import butterknife.OnClick;
 import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.base.BaseFragment;
 import ssthouse.com.simplereader.bean.BookBean;
+import ssthouse.com.simplereader.bean.event.AddNewBookEvent;
 import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToArticleEvent;
-import ssthouse.com.simplereader.bean.event.LoadApkBookBeanEvent;
+import ssthouse.com.simplereader.utils.ToastUtil;
 import timber.log.Timber;
 
 /**
@@ -67,18 +69,11 @@ public class BookListFragment extends BaseFragment {
     @OnClick(R.id.id_fab_add_book)
     public void onClickAddBook() {
         //TODO 逻辑还需要思考
-//        AddBookActivity.start(getActivity());
-
-        //先尝试加载raw中的文件
-
-        //显示加载内置书籍 dialog
-        EventBus.getDefault().post(new LoadApkBookBeanEvent());
-
         //直接启动文件管理器  获取路径
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        startActivityForResult(intent, 1);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, 1);
     }
 
 
@@ -140,6 +135,12 @@ public class BookListFragment extends BaseFragment {
             Uri uri = data.getData();
             String filePath = getRealFilePath(uri);
             Timber.e("文件路径:\t" + filePath);
+            if (TextUtils.isEmpty(filePath)) {
+                ToastUtil.toastSort(getContext(), "文件路径出错");
+                return;
+            }
+            //发出加载文件Event
+            EventBus.getDefault().post(new AddNewBookEvent(filePath));
         }
     }
 

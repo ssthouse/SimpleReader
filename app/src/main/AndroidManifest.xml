@@ -26,10 +26,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".AddBookActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".ReadingActivity"
             android:screenOrientation="portrait" />
 
