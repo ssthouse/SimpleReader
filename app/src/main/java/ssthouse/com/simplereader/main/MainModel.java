@@ -63,9 +63,16 @@ public class MainModel implements IMainModel {
             }
             //add last lesson
             articleBeanList.add(new ArticleBean(curArticleName, sb.toString(), bookBean));
+            //save to database
+            ActiveAndroid.beginTransaction();
+            for (ArticleBean article : articleBeanList) {
+                article.save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            ActiveAndroid.endTransaction();
             try {
                 br.close();
                 is.close();
@@ -73,42 +80,23 @@ public class MainModel implements IMainModel {
                 e.printStackTrace();
             }
         }
-        //Log out content
-//        for (ArticleBean article: articleBeanList) {
-//            Timber.e(article.content);
-//        }
-        Timber.e("所有文章的数目:\t" + articleBeanList.size());
-//        bookBean.save();
-        for (ArticleBean article : articleBeanList) {
-            article.save();
-        }
-
-        //log out data base
-        List<ArticleBean> testList = bookBean.getArticleBeanList();
-        Timber.e("数据库中article数目为:" + testList.size());
-        //抛出解析完成event
-        List<BookBean> bookBeanList = new ArrayList<>();
-        bookBeanList.add(bookBean);
         //抛出BookBean数据更新event
         EventBus.getDefault().post(new BookBeanChangedEvent());
     }
 
     /**
-     * TODO 作为public进行测试
-     * 加载本地关键词
+     * 加载apk关键词文件
      */
     @Override
     public void loadApkWords(Context context) {
         Scanner scanner = null;
         ArrayList<WordBean> wordBeenList = new ArrayList<>();
-        ActiveAndroid.beginTransaction();
         try {
             scanner = new Scanner(context.getResources().openRawResource(R.raw.nce4_words));
             String curWord = "";
             while (scanner.hasNext()) {
                 if (scanner.hasNextInt()) {
                     WordBean wordBean = new WordBean(curWord, scanner.nextInt());
-                    Timber.e(wordBean.name + "****************" + wordBean.level);
                     wordBeenList.add(wordBean);
                     curWord = "";
                 } else {
@@ -116,39 +104,17 @@ public class MainModel implements IMainModel {
                 }
             }
             //add to database
+            ActiveAndroid.beginTransaction();
             for (WordBean wordBean : wordBeenList) {
                 wordBean.save();
-                Timber.e(wordBean.name + "  " + wordBean.level);
             }
             ActiveAndroid.setTransactionSuccessful();
-            Timber.e("transaction successful");
         } catch (Exception e) {
             e.printStackTrace();
-            Timber.e("what the fuck");
-            Timber.e(e.getMessage());
         } finally {
             ActiveAndroid.endTransaction();
             scanner.close();
-            Timber.e("transaction end");
         }
-
-        //log out wordbean
-        List<WordBean> tempList = new Select().from(WordBean.class)
-                .orderBy("RANDOM()")
-                .execute();
-        Timber.e("总共单词数目为: " + tempList.size());
-        for (WordBean wordBean : tempList) {
-            Timber.e(wordBean.name + "   " + wordBean.level);
-        }
-    }
-
-
-    private WordBean parseWordBean(String str) {
-//        int leftIndex =
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == ' ') ;
-        }
-        return null;
     }
 
     /**
