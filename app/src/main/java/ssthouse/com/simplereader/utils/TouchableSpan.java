@@ -1,5 +1,6 @@
 package ssthouse.com.simplereader.utils;
 
+import android.graphics.Paint;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 
@@ -8,7 +9,7 @@ import android.text.style.ClickableSpan;
  */
 
 public abstract class TouchableSpan extends ClickableSpan {
-    public boolean mIsPressed;
+    private boolean mIsPressed;
     private int mPressedBackgroundColor;
     private int mNormalTextColor;
     private int mPressedTextColor;
@@ -25,9 +26,10 @@ public abstract class TouchableSpan extends ClickableSpan {
 
     @Override
     public void updateDrawState(TextPaint ds) {
-        //super.updateDrawState(ds);
+        super.updateDrawState(ds);
         ds.setColor(mIsPressed ? mPressedTextColor : mNormalTextColor);
         ds.bgColor = (mIsPressed ? mPressedBackgroundColor : 0xFFFFFF);
         ds.setUnderlineText(false);
+        ds.setStrokeCap(Paint.Cap.ROUND);
     }
 }

@@ -1,13 +1,5 @@
 package ssthouse.com.simplereader.main;
 
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.base.BaseFragment;
 import ssthouse.com.simplereader.bean.BookBean;
-import ssthouse.com.simplereader.bean.event.AddNewBookEvent;
-import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToArticleEvent;
-import ssthouse.com.simplereader.utils.ToastUtil;
-import timber.log.Timber;
+import ssthouse.com.simplereader.bean.event.UpdateBookListEvent;
 
 /**
  * Created by ssthouse on 2016/9/30.
@@ -40,9 +28,6 @@ public class BookListFragment extends BaseFragment {
 
     @Bind(R.id.id_lv_books)
     ListView mListViw;
-
-    @Bind(R.id.id_fab_add_book)
-    FloatingActionButton mFabAddBook;
 
     private List<BookBean> mBookList = new ArrayList<>();
 
@@ -61,21 +46,9 @@ public class BookListFragment extends BaseFragment {
                 EventBus.getDefault().post(new ChangeToArticleEvent(mBookList.get(position)));
             }
         });
-
         //刷新书库列表
-        EventBus.getDefault().post(new BookBeanChangedEvent());
+        EventBus.getDefault().post(new UpdateBookListEvent());
     }
-
-    @OnClick(R.id.id_fab_add_book)
-    public void onClickAddBook() {
-        //TODO 逻辑还需要思考
-        //直接启动文件管理器  获取路径
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, 1);
-    }
-
 
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
@@ -126,55 +99,5 @@ public class BookListFragment extends BaseFragment {
         }
         mBookList = bookList;
         mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {//是否选择，没选择就不会继续
-            Uri uri = data.getData();
-            String filePath = getRealFilePath(uri);
-            Timber.e("文件路径:\t" + filePath);
-            if (TextUtils.isEmpty(filePath)) {
-                ToastUtil.toastSort(getContext(), "文件路径出错");
-                return;
-            }
-            //发出加载文件Event
-            EventBus.getDefault().post(new AddNewBookEvent(filePath));
-        }
-    }
-
-    /**
-     * TODO bug:只有通过系统文件浏览器才能拿到文件??
-     *
-     * @param uri
-     * @return
-     */
-    public String getRealFilePath(Uri uri) {
-        if (null == uri)
-            return null;
-        String scheme = uri.getScheme();
-        String data = null;
-        if (scheme == null) {
-            data = uri.getPath();
-            Timber.e("get path from scheme");
-        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            data = uri.getPath();
-            Timber.e("get path from uti");
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            Timber.e("get path from content resolver");
-            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    if (index > -1) {
-                        data = cursor.getString(index);
-                    }
-                }
-                cursor.close();
-            }
-            Timber.e("cursor is null");
-        }
-        return data;
     }
 }

@@ -8,12 +8,10 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.List;
 
 import ssthouse.com.simplereader.bean.BookBean;
-import ssthouse.com.simplereader.bean.event.AddNewBookEvent;
-import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
+import ssthouse.com.simplereader.bean.event.UpdateBookListEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToArticleEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToBookListEvent;
-import ssthouse.com.simplereader.bean.event.LoadApkBookBeanEvent;
-import ssthouse.com.simplereader.utils.ToastUtil;
+import ssthouse.com.simplereader.bean.event.LoadRawBookBeanEvent;
 
 /**
  * Created by ssthouse on 2016/9/29.
@@ -21,8 +19,10 @@ import ssthouse.com.simplereader.utils.ToastUtil;
 
 public class MainPresenter {
 
+    //Model层
     private IMainModel mMainModel;
 
+    //View层
     private IMainView mMainView;
 
     private Context mContext;
@@ -34,26 +34,16 @@ public class MainPresenter {
         EventBus.getDefault().register(this);
     }
 
-    @Subscribe
-    public void onAddNewBook(AddNewBookEvent event) {
-        if (event == null || event.getFilePath() == null || event.getFilePath().length() == 0) {
-            ToastUtil.toastSort(mContext, "文件路径无效");
-            return;
-        }
-
-        mMainModel.saveNewBook(event.getFilePath());
-    }
-
     /**
      * 书籍列表刷新事件
      *
      * @param event
      */
     @Subscribe
-    public void onBookListUpdate(BookBeanChangedEvent event) {
+    public void onBookListUpdate(UpdateBookListEvent event) {
         mMainView.showWaitDialog();
         List<BookBean> bookBeanList = mMainModel.getAllBookBeans();
-        mMainView.reloadBooks(bookBeanList);
+        mMainView.loadBookBeans(bookBeanList);
         mMainView.dismissWaitDialog();
     }
 
@@ -69,7 +59,7 @@ public class MainPresenter {
         }
         mMainView.transFragment(IMainView.FRAGMENT_ARTICLE_LIST);
         //加载articles
-        mMainView.reloadArticles(mMainModel.getAllArticleBeans(event.getBookBean()));
+        mMainView.loadArticleBeans(mMainModel.getAllArticleBeans(event.getBookBean()));
     }
 
     /**
@@ -88,7 +78,7 @@ public class MainPresenter {
      * 加载apk中books
      */
     @Subscribe
-    public void onLoadApkBookBeanEvent(LoadApkBookBeanEvent event) {
+    public void onLoadApkBookBeanEvent(LoadRawBookBeanEvent event) {
         mMainView.showWaitDialog();
         //获取raw中.txt文件
         mMainModel.saveApkBookBeans(mContext);

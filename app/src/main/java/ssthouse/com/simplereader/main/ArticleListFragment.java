@@ -73,7 +73,11 @@ public class ArticleListFragment extends BaseFragment {
                 convertView.setTag(viewHolder);
             }
             viewHolder.tvName.setText(mArticleBeanList.get(position).getArticleName());
-            viewHolder.tvContent.setText(mArticleBeanList.get(position).content.substring(0, 50));
+            int beginIndex = 0;
+            while (mArticleBeanList.get(position).content.charAt(beginIndex) == ' ') {
+                beginIndex++;
+            }
+            viewHolder.tvContent.setText(mArticleBeanList.get(position).content.substring(beginIndex, beginIndex + 50));
             return convertView;
         }
     };

@@ -19,7 +19,7 @@ import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.base.BaseActivity;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
-import ssthouse.com.simplereader.bean.event.LoadApkBookBeanEvent;
+import ssthouse.com.simplereader.bean.event.LoadRawBookBeanEvent;
 import ssthouse.com.simplereader.utils.PreferUtil;
 import ssthouse.com.simplereader.utils.ToastUtil;
 
@@ -50,7 +50,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
-            actionBar.setTitle("书架");
+            actionBar.setTitle("书shujia架");
 
         //初始化fragmentManager
         mFragmentManager = getSupportFragmentManager();
@@ -63,7 +63,7 @@ public class MainActivity extends BaseActivity implements IMainView {
 
         //第一次进入 加载apk中BookBean
         if (PreferUtil.getInstance().isFistIn(this)) {
-            EventBus.getDefault().post(new LoadApkBookBeanEvent());
+            EventBus.getDefault().post(new LoadRawBookBeanEvent());
             PreferUtil.getInstance().setIsFistIn(this, false);
         }
     }
@@ -132,12 +132,12 @@ public class MainActivity extends BaseActivity implements IMainView {
     }
 
     @Override
-    public void reloadBooks(List<BookBean> bookList) {
+    public void loadBookBeans(List<BookBean> bookList) {
         mBookListFragment.loadBookList(bookList);
     }
 
     @Override
-    public void reloadArticles(List<ArticleBean> articleBeanList) {
+    public void loadArticleBeans(List<ArticleBean> articleBeanList) {
         mArticleListFragment.loadArticles(articleBeanList);
     }
 

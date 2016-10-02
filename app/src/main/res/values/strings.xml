@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SimpleReader</string>
+    <string name="str_book_name_holder">BookName</string>
+    <string name="str_brief_holder">Brief</string>
 </resources>

@@ -19,19 +19,13 @@ import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
 import ssthouse.com.simplereader.bean.WordBean;
-import ssthouse.com.simplereader.bean.event.BookBeanChangedEvent;
+import ssthouse.com.simplereader.bean.event.UpdateBookListEvent;
 
 /**
  * Created by ssthouse on 2016/9/29.
  */
 
 public class MainModel implements IMainModel {
-
-    @Override
-    public void saveNewBook(String filePath) {
-        //TODO save new file to data base
-
-    }
 
     @Override
     public void saveApkBookBeans(Context context) {
@@ -81,7 +75,7 @@ public class MainModel implements IMainModel {
             }
         }
         //抛出BookBean数据更新event
-        EventBus.getDefault().post(new BookBeanChangedEvent());
+        EventBus.getDefault().post(new UpdateBookListEvent());
     }
 
     /**

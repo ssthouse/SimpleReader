@@ -21,13 +21,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:textColor="@color/black"
                     android:id="@+id/id_tv_main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:clickable="true"
-                    android:textSize="22sp" />
+                    android:textColor="@color/black_text"
+                    android:textSize="20sp" />
             </LinearLayout>
         </ScrollView>
 
@@ -50,7 +50,7 @@
             android:layout_marginTop="50dp"
             android:visibility="invisible"
             rsv:filledColor="@color/colorPrimary"
-            rsv:rangeCount="5" />
+            rsv:rangeCount="6" />
         <!--rsv:filledColor="#00cbff"-->
         <!--rsv:emptyColor="#a8aeb8"-->
         <!--rsv:rangeCount="5"-->

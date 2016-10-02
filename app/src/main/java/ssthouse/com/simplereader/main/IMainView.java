@@ -14,9 +14,9 @@ public interface IMainView {
     int FRAGMENT_BOOK_LIST = 1000;
     int FRAGMENT_ARTICLE_LIST = 1001;
 
-    void reloadBooks(List<BookBean> bookBeanList);
+    void loadBookBeans(List<BookBean> bookBeanList);
 
-    void reloadArticles(List<ArticleBean> articleBeanList);
+    void loadArticleBeans(List<ArticleBean> articleBeanList);
 
     void transFragment(int fragmentState);
 

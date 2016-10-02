@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="BookName"
+        android:text="@string/str_book_name_holder"
+        android:textColor="@color/black_text"
         android:textSize="24sp" />
 
     <TextView
@@ -20,9 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:ellipsize="end"
         android:maxLines="1"
-        android:text="Brief"
+        android:text="@string/str_brief_holder"
+        android:textColor="@color/grey_text"
         android:textSize="18sp" />
 
 </LinearLayout>

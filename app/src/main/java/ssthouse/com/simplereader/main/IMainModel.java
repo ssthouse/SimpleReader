@@ -14,13 +14,6 @@ import ssthouse.com.simplereader.bean.BookBean;
 public interface IMainModel {
 
     /**
-     * 保存新书
-     *
-     * @param filePath 新书文件路径
-     */
-    void saveNewBook(String filePath);
-
-    /**
      * 加载apk中自带书籍
      *
      * @param context
@@ -38,7 +31,7 @@ public interface IMainModel {
      *
      * @return
      */
-    public List<BookBean> getAllBookBeans();
+    List<BookBean> getAllBookBeans();
 
     /**
      * 获取BookBean中的ArticleBeans

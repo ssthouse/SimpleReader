@@ -8,26 +8,27 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.activeandroid.query.Select;
 import com.github.channguyen.rsv.RangeSliderView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import ssthouse.com.simplereader.base.BaseActivity;
 import ssthouse.com.simplereader.bean.ArticleBean;
+import ssthouse.com.simplereader.bean.WordBean;
 import ssthouse.com.simplereader.utils.ToastUtil;
 import ssthouse.com.simplereader.utils.TouchableSpan;
 import timber.log.Timber;
@@ -57,6 +58,13 @@ public class ReadingActivity extends BaseActivity {
     @Bind(R.id.id_rsv_level)
     RangeSliderView mRsvLevel;
 
+    //所有可点击单词
+    private List<TouchableSpan> mTouchableSpanList = new ArrayList<>();
+    private TouchableSpan mCurFocusSpan;
+    private int mCurLevel = 0;
+    //所有当前文章
+    private List<WordBean> mWordBeanList = new ArrayList<>();
+
     public static void start(Context context, ArticleBean articleBean) {
         if (articleBean == null) {
             return;
@@ -65,7 +73,6 @@ public class ReadingActivity extends BaseActivity {
         intent.putExtra(KEY_EXTRA_ARTICLE_ID, articleBean.getId());
         context.startActivity(intent);
     }
-
 
     @Override
     public int getContentView() {
@@ -77,7 +84,7 @@ public class ReadingActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("SimpleReader");
+            actionBar.setTitle("分级阅读");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -91,39 +98,34 @@ public class ReadingActivity extends BaseActivity {
             ToastUtil.toastSort(this, "文章为空");
             return;
         }
-        Timber.e(mArticleBean.content);
 
-        //TODO  test click
-//        mTvMain.setText(mArticleBean.content);
-
-//        mTvMain.setMovementMethod(new LinkTouchMovementMethod());
-
-        //toggle分析slid bar
         mFabToggle.setOnClickListener(clickListener);
 
         mRsvLevel.setOnSlideListener(new RangeSliderView.OnSlideListener() {
             @Override
             public void onSlide(int index) {
-                //TODO
+                mCurLevel = index - 1;
+                updateTextView();
                 Timber.e("current index:\t" + index);
             }
         });
 
-        //处理文字 注: mTOuchableSpan为空的时候, 不可以设置哦....
-        foo();
+        //处理文字 注: mTouchableSpan为空的时候, 不可以设置哦....
+        initTouchableSpan();
     }
 
-    private TouchableSpan getInstance() {
-        return new TouchableSpan(getResources().getColor(R.color.black), 0xFFFFFFFF,
+    private TouchableSpan getNewTouchableSpan() {
+        return new TouchableSpan(getResources().getColor(R.color.black_text), 0xFFFFFFFF,
                 getResources().getColor(R.color.colorPrimary)) {
             @Override
             public void onClick(View widget) {
-                //clear all other click
-                for (TouchableSpan touchableSpan : mTouchableSpanList) {
-                    touchableSpan.setPressed(false);
+                if (mCurFocusSpan != null) {
+                    mCurFocusSpan.setPressed(false);
                 }
+                //设置当前focus span
+                mCurFocusSpan = this;
                 setPressed(true);
-                mTvMain.invalidate();
+                updateTextView();
             }
         };
     }
@@ -138,7 +140,6 @@ public class ReadingActivity extends BaseActivity {
                 set.play(animatorOne)
                         .with(animatorTwo);
                 set.setDuration(ANIMATE_DURATION);
-                set.start();
                 set.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -157,6 +158,7 @@ public class ReadingActivity extends BaseActivity {
                     public void onAnimationRepeat(Animator animation) {
                     }
                 });
+                set.start();
             } else {
                 mRsvLevel.setVisibility(View.VISIBLE);
                 ObjectAnimator animatorOne = ObjectAnimator.ofFloat(mRsvLevel, "translationX", 800, 0);
@@ -170,75 +172,54 @@ public class ReadingActivity extends BaseActivity {
         }
     };
 
-    private List<TouchableSpan> mTouchableSpanList = new ArrayList<>();
-
-    private void foo() {
-        mTvMain.setText("");
-        SpannableStringBuilder ssb = new SpannableStringBuilder("");
-        List<String> strList = new ArrayList<>();
-        for (int i = 0; i < 1000; i++) {
-            strList.add("testStr ");
+    /**
+     * 初始话TouchableSpan
+     */
+    private void initTouchableSpan() {
+        //获取所有WordBean
+        List<WordBean> allWordBeenList = new Select().from(WordBean.class).execute();
+        Map<String, WordBean> wordBeanMap = new HashMap<>();
+        for (WordBean wordBean : allWordBeenList) {
+            wordBeanMap.put(wordBean.name, wordBean);
         }
+        //获取所有当前article的word str -> 添加到wordBeanList中
+        String[] strArray = mArticleBean.content.split("\\s+");
+        List<String> strList = Arrays.asList(strArray);
         for (String str : strList) {
-            SpannableString text = new SpannableString(str);
-            TouchableSpan touchableSpan = getInstance();
+            if (wordBeanMap.containsKey(str)) {
+                mWordBeanList.add(wordBeanMap.get(str));
+            } else {
+                mWordBeanList.add(new WordBean(str, Integer.MAX_VALUE));
+            }
+        }
+        SpannableStringBuilder ssb = new SpannableStringBuilder("");
+        for (String str : strList) {
+            SpannableString text = new SpannableString(str + " ");
+            TouchableSpan touchableSpan = getNewTouchableSpan();
             mTouchableSpanList.add(touchableSpan);
-            text.setSpan(touchableSpan, 0, str.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            text.setSpan(touchableSpan, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             ssb.append(text);
         }
         mTvMain.setText(ssb, TextView.BufferType.SPANNABLE);
         mTvMain.setMovementMethod(LinkMovementMethod.getInstance());
-
     }
 
-    private class LinkTouchMovementMethod extends LinkMovementMethod {
-        //当前点击的span
-        private TouchableSpan mPressedSpan;
-
-        @Override
-        public boolean onTouchEvent(TextView textView, Spannable spannable, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                mPressedSpan = getPressedSpan(textView, spannable, event);
-                if (mPressedSpan != null) {
-                    mPressedSpan.setPressed(true);
-                    Selection.setSelection(spannable, spannable.getSpanStart(mPressedSpan),
-                            spannable.getSpanEnd(mPressedSpan));
-                }
-            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                TouchableSpan touchedSpan = getPressedSpan(textView, spannable, event);
-                if (mPressedSpan != null && touchedSpan != mPressedSpan) {
-                    mPressedSpan.setPressed(false);
-                    mPressedSpan = null;
-                    Selection.removeSelection(spannable);
-                }
+    /**
+     * 刷新TextView
+     */
+    private void updateTextView() {
+        for (int i = 0; i < mWordBeanList.size(); i++) {
+            //如果大于level set pressed true
+            if (mWordBeanList.get(i).level <= mCurLevel) {
+                mTouchableSpanList.get(i).setPressed(true);
             } else {
-                if (mPressedSpan != null) {
-                    mPressedSpan.setPressed(false);
-                    super.onTouchEvent(textView, spannable, event);
-                }
-                mPressedSpan = null;
-                Selection.removeSelection(spannable);
+                mTouchableSpanList.get(i).setPressed(false);
             }
-            return true;
         }
-
-        private TouchableSpan getPressedSpan(TextView textView, Spannable spannable, MotionEvent event) {
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-            x -= textView.getTotalPaddingLeft();
-            y -= textView.getTotalPaddingTop();
-            x += textView.getScrollX();
-            y += textView.getScrollY();
-            Layout layout = textView.getLayout();
-            int line = layout.getLineForVertical(y);
-            int off = layout.getOffsetForHorizontal(line, x);
-            TouchableSpan[] link = spannable.getSpans(off, off, TouchableSpan.class);
-            TouchableSpan touchedSpan = null;
-            if (link.length > 0) {
-                touchedSpan = link[0];
-            }
-            return touchedSpan;
-        }
+        mTvMain.invalidate();
+        //设置上一个点击的span为pressed
+        if (mCurFocusSpan != null)
+            mCurFocusSpan.setPressed(true);
     }
 
     @Override
