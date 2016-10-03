@@ -35,11 +35,12 @@ import ssthouse.com.simplereader.utils.ToastUtil;
 /**
  * Created by ssthouse on 2016/9/30.
  */
-
 public class ReadingActivity extends BaseActivity {
 
     public static final String KEY_EXTRA_ARTICLE_ID = "ArticleBeanId";
     public static final int ANIMATE_DURATION = 500;
+    public static final int ANIMATE_OFFSET_X = 1200;
+    public static final int ANIMATE_ROTATE_DEGREE = 180;
 
     private ArticleBean mArticleBean;
 
@@ -54,6 +55,7 @@ public class ReadingActivity extends BaseActivity {
 
     @Bind(R.id.id_rsv_level)
     RangeSliderView mRsvLevel;
+    private boolean mRsbIsVisiable = false;
 
     //所有可点击单词
     private List<TouchableSpan> mTouchableSpanList = new ArrayList<>();
@@ -112,42 +114,42 @@ public class ReadingActivity extends BaseActivity {
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (mRsvLevel.getVisibility() == View.VISIBLE) {
-                ObjectAnimator animatorOne = ObjectAnimator.ofFloat(mRsvLevel, "translationX", 0, 800);
-                ObjectAnimator animatorTwo = ObjectAnimator.ofFloat(mFabToggle, "rotationY", -180, 0);
-                AnimatorSet set = new AnimatorSet();
-                set.play(animatorOne)
-                        .with(animatorTwo);
-                set.setDuration(ANIMATE_DURATION);
-                set.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
+            mFabToggle.setClickable(false);
+            mRsbIsVisiable = !mRsbIsVisiable;
+            Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mRsvLevel.setVisibility(View.INVISIBLE);
-                    }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mFabToggle.setClickable(true);
+                }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                });
-                set.start();
-            } else {
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            };
+            ObjectAnimator animatorOne;
+            ObjectAnimator animatorTwo;
+            AnimatorSet set = new AnimatorSet();
+            if (mRsbIsVisiable) {
                 mRsvLevel.setVisibility(View.VISIBLE);
-                ObjectAnimator animatorOne = ObjectAnimator.ofFloat(mRsvLevel, "translationX", 800, 0);
-                ObjectAnimator animatorTwo = ObjectAnimator.ofFloat(mFabToggle, "rotationY", 0, 180);
-                AnimatorSet set = new AnimatorSet();
-                set.setDuration(ANIMATE_DURATION);
-                set.play(animatorOne)
-                        .with(animatorTwo);
-                set.start();
+                animatorOne = ObjectAnimator.ofFloat(mRsvLevel, "translationX", ANIMATE_OFFSET_X, 0);
+                animatorTwo = ObjectAnimator.ofFloat(mFabToggle, "rotationY", 0, ANIMATE_ROTATE_DEGREE);
+            } else {
+                animatorOne = ObjectAnimator.ofFloat(mRsvLevel, "translationX", 0, ANIMATE_OFFSET_X);
+                animatorTwo = ObjectAnimator.ofFloat(mFabToggle, "rotationY", -ANIMATE_ROTATE_DEGREE, 0);
             }
+            set.setDuration(ANIMATE_DURATION);
+            set.addListener(animatorListener);
+            set.play(animatorOne)
+                    .with(animatorTwo);
+            set.start();
         }
     };
 
