@@ -19,20 +19,13 @@ public class BookBean extends Model {
     @Column(name = "Name")
     public String bookName;
 
-    /**
-     * 简介
-     */
-    @Column(name = "Brief")
-    public String brief;
-
     public BookBean() {
         super();
     }
 
-    public BookBean(String bookName, String brief) {
+    public BookBean(String bookName) {
         super();
         this.bookName = bookName;
-        this.brief = brief;
     }
 
     /**

@@ -27,13 +27,13 @@ import ssthouse.com.simplereader.bean.event.UpdateBookListEvent;
 
 public class MainModel implements IMainModel {
 
+    private static final String DIVIDER_KEY_WORD = "Lesson";
+
     @Override
     public void saveApkBookBeans(Context context) {
         InputStream is = null;
         BufferedReader br = null;
-        BookBean bookBean = new BookBean();
-        bookBean.bookName = context.getString(R.string.str_default_book_name);
-        bookBean.brief = context.getString(R.string.str_brief_holder);
+        BookBean bookBean = new BookBean(context.getString(R.string.str_default_book_name));
         bookBean.save();
         List<ArticleBean> articleBeanList = new ArrayList<>();
         try {
@@ -43,7 +43,7 @@ public class MainModel implements IMainModel {
             StringBuilder sb = new StringBuilder();
             String curArticleName = "";
             while (curLine != null) {
-                if (curLine.contains("Lesson")) {
+                if (curLine.contains(DIVIDER_KEY_WORD)) {
                     if (sb.length() != 0 && curArticleName.length() != 0) {
                         articleBeanList.add(new ArticleBean(curArticleName, sb.toString(), bookBean));
                     }
@@ -106,7 +106,8 @@ public class MainModel implements IMainModel {
             e.printStackTrace();
         } finally {
             ActiveAndroid.endTransaction();
-            scanner.close();
+            if (scanner != null)
+                scanner.close();
         }
     }
 
@@ -119,12 +120,12 @@ public class MainModel implements IMainModel {
     public List<BookBean> getAllBookBeans() {
         return new Select()
                 .from(BookBean.class)
-                .orderBy("Name ASC")
                 .execute();
     }
 
     /**
      * 加载数据库中所有ArticleBean
+     *
      * @param bookBean
      * @return
      */

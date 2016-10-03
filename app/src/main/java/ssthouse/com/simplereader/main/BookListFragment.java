@@ -75,18 +75,15 @@ public class BookListFragment extends BaseFragment {
                 convertView = LayoutInflater.from(getActivity())
                         .inflate(R.layout.item_book, parent, false);
                 viewHolder.tvName = (TextView) convertView.findViewById(R.id.id_tv_book_name);
-                viewHolder.tvBrief = (TextView) convertView.findViewById(R.id.id_tv_brief);
                 convertView.setTag(viewHolder);
             }
             viewHolder.tvName.setText(mBookList.get(position).bookName);
-            viewHolder.tvBrief.setText(mBookList.get(position).brief);
             return convertView;
         }
     };
 
     class ViewHolder {
         TextView tvName;
-        TextView tvBrief;
     }
 
     /**

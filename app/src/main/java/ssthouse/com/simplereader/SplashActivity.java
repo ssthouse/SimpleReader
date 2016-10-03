@@ -17,7 +17,7 @@ import ssthouse.com.simplereader.main.MainActivity;
 
 public class SplashActivity extends BaseActivity {
 
-    private static int ANIMATION_TIME = 1500;
+    private static final int ANIMATION_TIME = 1500;
 
     @Bind(R.id.id_iv_bg)
     ImageView ivBg;

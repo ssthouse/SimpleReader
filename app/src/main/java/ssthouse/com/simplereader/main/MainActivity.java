@@ -27,6 +27,7 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     //两次返回退出app
     private static long lastBackKeyPressedTIme = 0;
+    private static final int MIN_EXIT_DURATION = 1000;
 
     @Bind(R.id.id_tb)
     Toolbar toolbar;
@@ -50,17 +51,14 @@ public class MainActivity extends BaseActivity implements IMainView {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
-            actionBar.setTitle("书shujia架");
-
+            actionBar.setTitle(R.string.str_book_list);
         //初始化fragmentManager
         mFragmentManager = getSupportFragmentManager();
         mBookListFragment = new BookListFragment();
         mArticleListFragment = new ArticleListFragment();
         transFragment(FRAGMENT_BOOK_LIST);
-
         //presenter层
         mPresenter = new MainPresenter(this, new MainModel());
-
         //第一次进入 加载apk中BookBean
         if (PreferUtil.getInstance().isFistIn(this)) {
             EventBus.getDefault().post(new LoadRawBookBeanEvent());
@@ -87,7 +85,7 @@ public class MainActivity extends BaseActivity implements IMainView {
                 targetFragment = mBookListFragment;
                 if (actionBar != null) {
                     actionBar.setDisplayHomeAsUpEnabled(false);
-                    actionBar.setTitle("书库");
+                    actionBar.setTitle(getString(R.string.str_book_list));
                 }
                 break;
             case FRAGMENT_ARTICLE_LIST:
@@ -95,7 +93,7 @@ public class MainActivity extends BaseActivity implements IMainView {
                 targetFragment = mArticleListFragment;
                 if (actionBar != null) {
                     actionBar.setDisplayHomeAsUpEnabled(true);
-                    actionBar.setTitle("文章列表");
+                    actionBar.setTitle(R.string.str_article_list);
                 }
                 break;
         }
@@ -148,11 +146,11 @@ public class MainActivity extends BaseActivity implements IMainView {
             transFragment(FRAGMENT_BOOK_LIST);
             return;
         }
-        if (System.currentTimeMillis() - lastBackKeyPressedTIme < 1000) {
+        if (System.currentTimeMillis() - lastBackKeyPressedTIme < MIN_EXIT_DURATION) {
             finish();
         } else {
             lastBackKeyPressedTIme = System.currentTimeMillis();
-            ToastUtil.toastSort(this, "再次点击退出");
+            ToastUtil.toastSort(this, getString(R.string.str_twice_back_to_finish));
         }
     }
 }

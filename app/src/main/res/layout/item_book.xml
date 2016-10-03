@@ -9,16 +9,11 @@
         android:id="@+id/id_tv_book_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:text="BookName"
-        android:textSize="16sp" />
+        android:textSize="22sp" />
 
-    <TextView
-        android:id="@+id/id_tv_brief"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="Brief"
-        android:textSize="12sp" />
 
 </LinearLayout>

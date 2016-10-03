@@ -5,4 +5,7 @@
     <string name="str_level_reading">分级阅读</string>
     <string name="str_empty_article">文章为空</string>
     <string name="str_default_book_name">新概念4</string>
+    <string name="str_book_list">书架</string>
+    <string name="str_article_list">文章列表</string>
+    <string name="str_twice_back_to_finish">再次点击退出</string>
 </resources>
