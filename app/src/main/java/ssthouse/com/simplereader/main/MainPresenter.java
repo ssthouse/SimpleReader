@@ -7,11 +7,13 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
+import rx.functions.Action1;
 import ssthouse.com.simplereader.bean.BookBean;
 import ssthouse.com.simplereader.bean.event.UpdateBookListEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToArticleEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToBookListEvent;
-import ssthouse.com.simplereader.bean.event.LoadRawBookBeanEvent;
+import ssthouse.com.simplereader.bean.event.LoadRawFileEvent;
+import timber.log.Timber;
 
 /**
  * Created by ssthouse on 2016/9/29.
@@ -41,10 +43,8 @@ public class MainPresenter {
      */
     @Subscribe
     public void onBookListUpdate(UpdateBookListEvent event) {
-        mMainView.showWaitDialog();
         List<BookBean> bookBeanList = mMainModel.getAllBookBeans();
         mMainView.loadBookBeans(bookBeanList);
-        mMainView.dismissWaitDialog();
     }
 
     /**
@@ -78,11 +78,16 @@ public class MainPresenter {
      * 加载apk中books
      */
     @Subscribe
-    public void onLoadApkBookBeanEvent(LoadRawBookBeanEvent event) {
+    public void onLoadApkBookBeanEvent(LoadRawFileEvent event) {
         mMainView.showWaitDialog();
         //获取raw中.txt文件
-        mMainModel.saveApkBookBeans(mContext);
-        //加载raw中WordBean
-        mMainModel.loadApkWords(mContext);
+        mMainModel.loadRawFiles(mContext)
+                .subscribe(new Action1() {
+                    @Override
+                    public void call(Object o) {
+                        mMainView.dismissWaitDialog();
+                        Timber.e("dismiss dialog");
+                    }
+                });
     }
 }

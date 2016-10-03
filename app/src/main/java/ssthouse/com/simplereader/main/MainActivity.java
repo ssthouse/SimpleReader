@@ -19,9 +19,10 @@ import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.base.BaseActivity;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
-import ssthouse.com.simplereader.bean.event.LoadRawBookBeanEvent;
+import ssthouse.com.simplereader.bean.event.LoadRawFileEvent;
 import ssthouse.com.simplereader.utils.PreferUtil;
 import ssthouse.com.simplereader.utils.ToastUtil;
+import timber.log.Timber;
 
 public class MainActivity extends BaseActivity implements IMainView {
 
@@ -61,7 +62,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         mPresenter = new MainPresenter(this, new MainModel());
         //第一次进入 加载apk中BookBean
         if (PreferUtil.getInstance().isFistIn(this)) {
-            EventBus.getDefault().post(new LoadRawBookBeanEvent());
+            EventBus.getDefault().post(new LoadRawFileEvent());
             PreferUtil.getInstance().setIsFistIn(this, false);
         }
     }
@@ -122,6 +123,7 @@ public class MainActivity extends BaseActivity implements IMainView {
                     .create();
         }
         mDialog.show();
+        Timber.e("show dialog");
     }
 
     @Override

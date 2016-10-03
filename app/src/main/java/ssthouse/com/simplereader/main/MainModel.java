@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import ssthouse.com.simplereader.R;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
@@ -29,8 +33,12 @@ public class MainModel implements IMainModel {
 
     private static final String DIVIDER_KEY_WORD = "Lesson";
 
-    @Override
-    public void saveApkBookBeans(Context context) {
+    /**
+     * 加载raw中书籍
+     *
+     * @param context
+     */
+    public void loadRawBookBeans(Context context) {
         InputStream is = null;
         BufferedReader br = null;
         BookBean bookBean = new BookBean(context.getString(R.string.str_default_book_name));
@@ -78,10 +86,9 @@ public class MainModel implements IMainModel {
     }
 
     /**
-     * 加载apk关键词文件
+     * 加载raw中关键字文件
      */
-    @Override
-    public void loadApkWords(Context context) {
+    public void loadRawWords(Context context) {
         Scanner scanner = null;
         ArrayList<WordBean> wordBeenList = new ArrayList<>();
         try {
@@ -109,6 +116,22 @@ public class MainModel implements IMainModel {
             if (scanner != null)
                 scanner.close();
         }
+    }
+
+    @Override
+    public Observable loadRawFiles(final Context context) {
+        return Observable.just("")
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        //进行子线程文件操作
+                        loadRawWords(context);
+                        loadRawBookBeans(context);
+                        return null;
+                    }
+                });
     }
 
     /**

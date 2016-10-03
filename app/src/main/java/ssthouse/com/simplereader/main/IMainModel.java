@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.List;
 
+import rx.Observable;
 import ssthouse.com.simplereader.bean.ArticleBean;
 import ssthouse.com.simplereader.bean.BookBean;
 
@@ -14,17 +15,12 @@ import ssthouse.com.simplereader.bean.BookBean;
 public interface IMainModel {
 
     /**
-     * 加载apk中自带书籍
+     * 加载raw中文件
      *
      * @param context
+     * @return
      */
-    void saveApkBookBeans(Context context);
-
-    /**
-     * 加载apk中WordBean
-     * @param context
-     */
-    void loadApkWords(Context context);
+    Observable loadRawFiles(Context context);
 
     /**
      * 加载app已保存所有书籍
@@ -35,6 +31,7 @@ public interface IMainModel {
 
     /**
      * 获取BookBean中的ArticleBeans
+     *
      * @param bookBean
      * @return
      */
