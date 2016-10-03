@@ -21,12 +21,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:gravity="center_horizontal"
                     android:id="@+id/id_tv_main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:clickable="true"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="4dp"
                     android:textColor="@color/black_text"
                     android:textSize="20sp" />
             </LinearLayout>

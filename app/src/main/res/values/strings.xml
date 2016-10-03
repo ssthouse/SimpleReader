@@ -8,4 +8,5 @@
     <string name="str_book_list">书架</string>
     <string name="str_article_list">文章列表</string>
     <string name="str_twice_back_to_finish">再次点击退出</string>
+    <string name="str_please_wait">正在加载,请稍候</string>
 </resources>
