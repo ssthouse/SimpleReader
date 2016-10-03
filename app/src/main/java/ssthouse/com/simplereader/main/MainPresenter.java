@@ -73,9 +73,7 @@ public class MainPresenter {
     }
 
     /**
-     * TODO:
-     * 使用RxJava进行异步操作   从Model返回一个Observable
-     * 加载apk中books
+     * 加载raw中文件
      */
     @Subscribe
     public void onLoadApkBookBeanEvent(LoadRawFileEvent event) {
