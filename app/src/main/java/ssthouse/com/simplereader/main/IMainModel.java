@@ -20,7 +20,7 @@ public interface IMainModel {
      * @param context
      * @return
      */
-    Observable loadRawFiles(Context context);
+    Observable<String> loadRawFiles(Context context);
 
     /**
      * 加载app已保存所有书籍

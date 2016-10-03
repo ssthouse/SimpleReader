@@ -38,7 +38,7 @@ public class MainModel implements IMainModel {
      *
      * @param context
      */
-    public void loadRawBookBeans(Context context) {
+    private void loadRawBookBeans(Context context) {
         InputStream is = null;
         BufferedReader br = null;
         BookBean bookBean = new BookBean(context.getString(R.string.str_default_book_name));
@@ -88,7 +88,7 @@ public class MainModel implements IMainModel {
     /**
      * 加载raw中关键字文件
      */
-    public void loadRawWords(Context context) {
+    private void loadRawWords(Context context) {
         Scanner scanner = null;
         ArrayList<WordBean> wordBeenList = new ArrayList<>();
         try {
@@ -119,9 +119,9 @@ public class MainModel implements IMainModel {
     }
 
     @Override
-    public Observable loadRawFiles(final Context context) {
+    public Observable<String> loadRawFiles(final Context context) {
         return Observable.just("")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<String, String>() {
                     @Override

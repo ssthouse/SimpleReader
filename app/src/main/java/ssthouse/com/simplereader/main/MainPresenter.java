@@ -9,11 +9,10 @@ import java.util.List;
 
 import rx.functions.Action1;
 import ssthouse.com.simplereader.bean.BookBean;
-import ssthouse.com.simplereader.bean.event.UpdateBookListEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToArticleEvent;
 import ssthouse.com.simplereader.bean.event.ChangeToBookListEvent;
 import ssthouse.com.simplereader.bean.event.LoadRawFileEvent;
-import timber.log.Timber;
+import ssthouse.com.simplereader.bean.event.UpdateBookListEvent;
 
 /**
  * Created by ssthouse on 2016/9/29.
@@ -80,11 +79,10 @@ public class MainPresenter {
         mMainView.showWaitDialog();
         //获取raw中.txt文件
         mMainModel.loadRawFiles(mContext)
-                .subscribe(new Action1() {
+                .subscribe(new Action1<String>() {
                     @Override
-                    public void call(Object o) {
+                    public void call(String str) {
                         mMainView.dismissWaitDialog();
-                        Timber.e("dismiss dialog");
                     }
                 });
     }
