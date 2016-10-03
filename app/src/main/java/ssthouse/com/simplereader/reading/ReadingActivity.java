@@ -140,10 +140,10 @@ public class ReadingActivity extends BaseActivity {
             if (mRsbIsVisiable) {
                 mRsvLevel.setVisibility(View.VISIBLE);
                 animatorOne = ObjectAnimator.ofFloat(mRsvLevel, "translationX", ANIMATE_OFFSET_X, 0);
-                animatorTwo = ObjectAnimator.ofFloat(mFabToggle, "rotationY", 0, ANIMATE_ROTATE_DEGREE);
+                animatorTwo = ObjectAnimator.ofFloat(mFabToggle, "rotation", 0, ANIMATE_ROTATE_DEGREE);
             } else {
                 animatorOne = ObjectAnimator.ofFloat(mRsvLevel, "translationX", 0, ANIMATE_OFFSET_X);
-                animatorTwo = ObjectAnimator.ofFloat(mFabToggle, "rotationY", -ANIMATE_ROTATE_DEGREE, 0);
+                animatorTwo = ObjectAnimator.ofFloat(mFabToggle, "rotation", -ANIMATE_ROTATE_DEGREE, 0);
             }
             set.setDuration(ANIMATE_DURATION);
             set.addListener(animatorListener);
